@@ -24,6 +24,13 @@
         android:theme="@style/Theme.YangMaoHunter"
         tools:targetApi="31">
 
+        <!-- Disable automatic Firebase initialization by FirebaseInitProvider -->
+        <!-- This prevents crash on startup in China network environment -->
+        <provider
+            android:name="com.google.firebase.provider.FirebaseInitProvider"
+            android:authorities="${applicationId}.firebase-init"
+            tools:node="remove" />
+
         <activity
             android:name=".presentation.ui.auth.AuthActivity"
             android:exported="true"
@@ -45,14 +52,6 @@
         <activity
             android:name=".presentation.ui.deal_detail.DealDetailActivity"
             android:exported="false" />
-
-        <service
-            android:name=".core.notification.HuntFirebaseMessagingService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
