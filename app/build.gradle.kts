@@ -95,7 +95,7 @@ dependencies {
     implementation("com.facebook.shimmer:shimmer:0.5.0")
 
     // Flexbox Layout
-    implementation("com.google.android:flexbox:3.0.0-beta1")
+    implementation("com.google.android.flexbox:flexbox:3.0.0")
 
     // Testing
     testImplementation("junit:junit:4.13.2")
