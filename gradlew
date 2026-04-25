@@ -92,11 +92,12 @@ if [ $cygwin = "true" ] ; then
     # Increase the maximum file descriptors if we can.
     if [ "$MAX_FD" = "maximum" -o "$MAX_FD" = "max" ] ; then
         MAX_FD=`ulimit -H -n`
+    fi
     if [ "$?" -eq 0 ] ; then
         ulimit -n $MAX_FD
+    fi
     if [ "$?" -ne 0 ] ; then
         warn "Could not set maximum file descriptor limit: $MAX_FD"
-    fi
     fi
     # Sometimes the path is not properly converted.
     # The result is that the JVM can't find the main class.
