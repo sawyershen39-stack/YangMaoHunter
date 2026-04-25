@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">羊毛猎手</string>
+    <string name="tab_home">推荐</string>
+    <string name="tab_upcoming">即将开抢</string>
+    <string name="tab_profile">我的</string>
+    <string name="notification_channel_daily_summary">每日优惠汇总</string>
+    <string name="notification_channel_upcoming">开抢提醒</string>
+    <string name="notification_channel_review">审核结果</string>
+    <string name="notification_channel_personal">个性化推荐</string>
+    <string name="daily_summary_title">今日优惠汇总</string>
+    <string name="daily_summary_text">为你整理了%d条今天值得关注的优惠</string>
+    <string name="upcoming_reminder_title">即将开抢</string>
+    <string name="search_hint">搜索优惠...</string>
+</resources>
