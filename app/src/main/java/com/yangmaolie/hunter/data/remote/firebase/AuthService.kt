@@ -18,30 +18,53 @@ class AuthService @Inject constructor() {
         }
     }
 
+    private var offlineUserId: String? = null
+
     suspend fun signInAnonymously(): Result<String> {
         return try {
-            val auth = auth ?: return Result.failure(Exception("Firebase 初始化失败 - 请检查网络连接"))
-            val result = auth.signInAnonymously().await()
-            val userId = result.user?.uid ?: ""
-            Result.success(userId)
+            val auth = auth
+            if (auth != null) {
+                val result = auth.signInAnonymously().await()
+                val userId = result.user?.uid ?: ""
+                Result.success(userId)
+            } else {
+                // Offline mode: generate local user ID
+                if (offlineUserId == null) {
+                    offlineUserId = "offline_${System.currentTimeMillis()}"
+                }
+                Result.success(offlineUserId!!)
+            }
         } catch (e: Exception) {
-            Result.failure(e)
+            // Fallback to offline mode on any error
+            if (offlineUserId == null) {
+                offlineUserId = "offline_${System.currentTimeMillis()}"
+            }
+            Result.success(offlineUserId!!)
         }
     }
 
     fun getCurrentUserId(): String? {
         return try {
-            auth?.currentUser?.uid
+            val firebaseId = auth?.currentUser?.uid
+            if (firebaseId != null) {
+                firebaseId
+            } else {
+                offlineUserId
+            }
         } catch (e: Exception) {
-            null
+            offlineUserId
         }
     }
 
     fun isLoggedIn(): Boolean {
         return try {
-            auth?.currentUser != null
+            if (auth?.currentUser != null) {
+                true
+            } else {
+                offlineUserId != null
+            }
         } catch (e: Exception) {
-            false
+            offlineUserId != null
         }
     }
 }

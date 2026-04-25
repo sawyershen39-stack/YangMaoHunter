@@ -28,6 +28,10 @@ class FirestoreService @Inject constructor() {
         }
     }
 
+    // Offline caches
+    private val offlineCollections: MutableSet<String> = mutableSetOf()
+    private var offlineUserPreferences: UserPreferenceRemote? = null
+
     companion object {
         const val COLLECTION_DEALS = "deals"
         const val COLLECTION_USERS = "users"
@@ -35,6 +39,10 @@ class FirestoreService @Inject constructor() {
         const val COLLECTION_USER_BEHAVIOR_LOGS = "user_behavior_logs"
         const val COLLECTION_USER_COLLECTIONS = "user_collections"
         const val COLLECTION_USER_REMINDERS = "user_reminders"
+    }
+
+    fun isAvailable(): Boolean {
+        return db != null
     }
 
     suspend fun getApprovedDeals(): List<Deal> {
@@ -115,9 +123,15 @@ class FirestoreService @Inject constructor() {
                     .set(data)
                     .await()
                 true
-            } ?: false
+            } ?: run {
+                // Offline mode: cache in memory
+                offlineUserPreferences = preferences.toRemote()
+                true
+            }
         } catch (e: Exception) {
-            false
+            // Fallback to offline cache
+            offlineUserPreferences = preferences.toRemote()
+            true
         }
     }
 
@@ -129,9 +143,10 @@ class FirestoreService @Inject constructor() {
                     .get()
                     .await()
                 doc.toObject(UserPreferenceRemote::class.java)?.toDomain(userId)
-            }
+            } ?: offlineUserPreferences?.toDomain(userId)
         } catch (e: Exception) {
-            null
+            // Fallback to offline cache
+            offlineUserPreferences?.toDomain(userId)
         }
     }
 
@@ -178,9 +193,15 @@ class FirestoreService @Inject constructor() {
                     .add(data)
                     .await()
                 true
-            } ?: false
+            } ?: run {
+                // Offline mode: cache in memory
+                offlineCollections.add("$userId:$dealId")
+                true
+            }
         } catch (e: Exception) {
-            false
+            // Fallback to offline cache
+            offlineCollections.add("$userId:$dealId")
+            true
         }
     }
 
@@ -197,9 +218,15 @@ class FirestoreService @Inject constructor() {
                     doc.reference.delete().await()
                 }
                 true
-            } ?: false
+            } ?: run {
+                // Offline mode: remove from memory cache
+                offlineCollections.remove("$userId:$dealId")
+                true
+            }
         } catch (e: Exception) {
-            false
+            // Fallback to offline cache
+            offlineCollections.remove("$userId:$dealId")
+            true
         }
     }
 
@@ -212,9 +239,10 @@ class FirestoreService @Inject constructor() {
                     .get()
                     .await()
                 !snapshot.isEmpty
-            } ?: false
+            } ?: offlineCollections.contains("$userId:$dealId")
         } catch (e: Exception) {
-            false
+            // Fallback to offline cache
+            offlineCollections.contains("$userId:$dealId")
         }
     }
 
@@ -226,9 +254,14 @@ class FirestoreService @Inject constructor() {
                     .get()
                     .await()
                 snapshot.documents.mapNotNull { it.getString("dealId") }
-            } ?: emptyList()
+            } ?: offlineCollections
+                .filter { it.startsWith("$userId:") }
+                .map { it.substringAfter(":") }
         } catch (e: Exception) {
-            emptyList()
+            // Fallback to offline cache
+            offlineCollections
+                .filter { it.startsWith("$userId:") }
+                .map { it.substringAfter(":") }
         }
     }
 

@@ -3,6 +3,8 @@ package com.yangmaolie.hunter.presentation.di
 import com.yangmaolie.hunter.data.remote.firebase.AuthService
 import com.yangmaolie.hunter.data.remote.firebase.FirestoreService
 import com.yangmaolie.hunter.data.repository.DealRepositoryImpl
+import com.yangmaolie.hunter.data.repository.OfflineDealRepository
+import com.yangmaolie.hunter.data.repository.OfflineRecommendRepository
 import com.yangmaolie.hunter.data.repository.RecommendRepositoryImpl
 import com.yangmaolie.hunter.domain.repository.DealRepository
 import com.yangmaolie.hunter.domain.repository.RecommendRepository
@@ -34,17 +36,29 @@ object AppModule {
     @Provides
     @Singleton
     fun provideDealRepository(
-        firestoreService: FirestoreService
+        firestoreService: FirestoreService,
+        offlineDealRepository: OfflineDealRepository
     ): DealRepository {
-        return DealRepositoryImpl(firestoreService)
+        // If Firestore is not available (offline/China network), use offline repo
+        return if (firestoreService.isAvailable()) {
+            DealRepositoryImpl(firestoreService)
+        } else {
+            offlineDealRepository
+        }
     }
 
     @Provides
     @Singleton
     fun provideRecommendRepository(
-        firestoreService: FirestoreService
+        firestoreService: FirestoreService,
+        offlineRecommendRepository: OfflineRecommendRepository
     ): RecommendRepository {
-        return RecommendRepositoryImpl(firestoreService)
+        // If Firestore is not available (offline/China network), use offline repo
+        return if (firestoreService.isAvailable()) {
+            RecommendRepositoryImpl(firestoreService)
+        } else {
+            offlineRecommendRepository
+        }
     }
 
     @Provides
