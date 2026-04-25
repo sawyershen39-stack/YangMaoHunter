@@ -28,9 +28,18 @@ android {
             keyAlias = "androiddebugkey"
             keyPassword = "android"
         }
+        getByName("debug") {
+            storeFile = file("../keystore/debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
     }
 
     buildTypes {
+        debug {
+            signingConfig = signingConfigs.getByName("debug")
+        }
         release {
             isMinifyEnabled = true
             signingConfig = signingConfigs.getByName("release")
