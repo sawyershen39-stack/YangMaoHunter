@@ -13,8 +13,20 @@ import javax.inject.Singleton
 @Singleton
 class FirestoreService @Inject constructor() {
 
-    private val db: FirebaseFirestore = Firebase.firestore
-    private val storage: FirebaseStorage = FirebaseStorage.getInstance()
+    private val db: FirebaseFirestore? by lazy {
+        try {
+            Firebase.firestore
+        } catch (e: Exception) {
+            null
+        }
+    }
+    private val storage: FirebaseStorage? by lazy {
+        try {
+            FirebaseStorage.getInstance()
+        } catch (e: Exception) {
+            null
+        }
+    }
 
     companion object {
         const val COLLECTION_DEALS = "deals"
@@ -27,15 +39,17 @@ class FirestoreService @Inject constructor() {
 
     suspend fun getApprovedDeals(): List<Deal> {
         return try {
-            val snapshot = db.collection(COLLECTION_DEALS)
-                .whereEqualTo("status", "approved")
-                .orderBy("publishTime", com.google.firebase.firestore.Query.Direction.DESCENDING)
-                .get()
-                .await()
+            db?.let { db ->
+                val snapshot = db.collection(COLLECTION_DEALS)
+                    .whereEqualTo("status", "approved")
+                    .orderBy("publishTime", com.google.firebase.firestore.Query.Direction.DESCENDING)
+                    .get()
+                    .await()
 
-            snapshot.documents.mapNotNull { doc ->
-                doc.toObject(DealRemote::class.java)?.toDomain(doc.id)
-            }
+                snapshot.documents.mapNotNull { doc ->
+                    doc.toObject(DealRemote::class.java)?.toDomain(doc.id)
+                }
+            } ?: emptyList()
         } catch (e: Exception) {
             emptyList()
         }
@@ -43,16 +57,18 @@ class FirestoreService @Inject constructor() {
 
     suspend fun getDealsByCategory(category: String): List<Deal> {
         return try {
-            val snapshot = db.collection(COLLECTION_DEALS)
-                .whereEqualTo("status", "approved")
-                .whereEqualTo("category", category)
-                .orderBy("publishTime", com.google.firebase.firestore.Query.Direction.DESCENDING)
-                .get()
-                .await()
+            db?.let { db ->
+                val snapshot = db.collection(COLLECTION_DEALS)
+                    .whereEqualTo("status", "approved")
+                    .whereEqualTo("category", category)
+                    .orderBy("publishTime", com.google.firebase.firestore.Query.Direction.DESCENDING)
+                    .get()
+                    .await()
 
-            snapshot.documents.mapNotNull { doc ->
-                doc.toObject(DealRemote::class.java)?.toDomain(doc.id)
-            }
+                snapshot.documents.mapNotNull { doc ->
+                    doc.toObject(DealRemote::class.java)?.toDomain(doc.id)
+                }
+            } ?: emptyList()
         } catch (e: Exception) {
             emptyList()
         }
@@ -61,17 +77,19 @@ class FirestoreService @Inject constructor() {
     suspend fun getUpcomingDeals(): List<Deal> {
         val now = System.currentTimeMillis()
         return try {
-            val snapshot = db.collection(COLLECTION_DEALS)
-                .whereEqualTo("status", "approved")
-                .whereEqualTo("isUpcoming", true)
-                .whereGreaterThan("startTime", now)
-                .orderBy("startTime", com.google.firebase.firestore.Query.Direction.ASCENDING)
-                .get()
-                .await()
+            db?.let { db ->
+                val snapshot = db.collection(COLLECTION_DEALS)
+                    .whereEqualTo("status", "approved")
+                    .whereEqualTo("isUpcoming", true)
+                    .whereGreaterThan("startTime", now)
+                    .orderBy("startTime", com.google.firebase.firestore.Query.Direction.ASCENDING)
+                    .get()
+                    .await()
 
-            snapshot.documents.mapNotNull { doc ->
-                doc.toObject(DealRemote::class.java)?.toDomain(doc.id)
-            }
+                snapshot.documents.mapNotNull { doc ->
+                    doc.toObject(DealRemote::class.java)?.toDomain(doc.id)
+                }
+            } ?: emptyList()
         } catch (e: Exception) {
             emptyList()
         }
@@ -79,8 +97,10 @@ class FirestoreService @Inject constructor() {
 
     suspend fun getDealById(dealId: String): Deal? {
         return try {
-            val doc = db.collection(COLLECTION_DEALS).document(dealId).get().await()
-            doc.toObject(DealRemote::class.java)?.toDomain(doc.id)
+            db?.let { db ->
+                val doc = db.collection(COLLECTION_DEALS).document(dealId).get().await()
+                doc.toObject(DealRemote::class.java)?.toDomain(doc.id)
+            }
         } catch (e: Exception) {
             null
         }
@@ -88,12 +108,14 @@ class FirestoreService @Inject constructor() {
 
     suspend fun saveUserPreferences(userId: String, preferences: UserPreference): Boolean {
         return try {
-            val data = preferences.toRemote()
-            db.collection(COLLECTION_USER_PREFERENCES)
-                .document(userId)
-                .set(data)
-                .await()
-            true
+            db?.let { db ->
+                val data = preferences.toRemote()
+                db.collection(COLLECTION_USER_PREFERENCES)
+                    .document(userId)
+                    .set(data)
+                    .await()
+                true
+            } ?: false
         } catch (e: Exception) {
             false
         }
@@ -101,11 +123,13 @@ class FirestoreService @Inject constructor() {
 
     suspend fun getUserPreferences(userId: String): UserPreference? {
         return try {
-            val doc = db.collection(COLLECTION_USER_PREFERENCES)
-                .document(userId)
-                .get()
-                .await()
-            doc.toObject(UserPreferenceRemote::class.java)?.toDomain(userId)
+            db?.let { db ->
+                val doc = db.collection(COLLECTION_USER_PREFERENCES)
+                    .document(userId)
+                    .get()
+                    .await()
+                doc.toObject(UserPreferenceRemote::class.java)?.toDomain(userId)
+            }
         } catch (e: Exception) {
             null
         }
@@ -113,10 +137,12 @@ class FirestoreService @Inject constructor() {
 
     suspend fun logUserBehavior(log: UserBehaviorLog): Boolean {
         return try {
-            db.collection(COLLECTION_USER_BEHAVIOR_LOGS)
-                .add(log.toRemote())
-                .await()
-            true
+            db?.let { db ->
+                db.collection(COLLECTION_USER_BEHAVIOR_LOGS)
+                    .add(log.toRemote())
+                    .await()
+                true
+            } ?: false
         } catch (e: Exception) {
             false
         }
@@ -124,15 +150,17 @@ class FirestoreService @Inject constructor() {
 
     suspend fun getUserBehaviorLogs(userId: String): List<UserBehaviorLog> {
         return try {
-            val snapshot = db.collection(COLLECTION_USER_BEHAVIOR_LOGS)
-                .whereEqualTo("userId", userId)
-                .orderBy("timestamp", com.google.firebase.firestore.Query.Direction.DESCENDING)
-                .get()
-                .await()
+            db?.let { db ->
+                val snapshot = db.collection(COLLECTION_USER_BEHAVIOR_LOGS)
+                    .whereEqualTo("userId", userId)
+                    .orderBy("timestamp", com.google.firebase.firestore.Query.Direction.DESCENDING)
+                    .get()
+                    .await()
 
-            snapshot.documents.mapNotNull { doc ->
-                doc.toObject(UserBehaviorLogRemote::class.java)?.toDomain(doc.id)
-            }
+                snapshot.documents.mapNotNull { doc ->
+                    doc.toObject(UserBehaviorLogRemote::class.java)?.toDomain(doc.id)
+                }
+            } ?: emptyList()
         } catch (e: Exception) {
             emptyList()
         }
@@ -140,15 +168,17 @@ class FirestoreService @Inject constructor() {
 
     suspend fun addToCollection(userId: String, dealId: String): Boolean {
         return try {
-            val data = mapOf(
-                "userId" to userId,
-                "dealId" to dealId,
-                "createdAt" to System.currentTimeMillis()
-            )
-            db.collection(COLLECTION_USER_COLLECTIONS)
-                .add(data)
-                .await()
-            true
+            db?.let { db ->
+                val data = mapOf(
+                    "userId" to userId,
+                    "dealId" to dealId,
+                    "createdAt" to System.currentTimeMillis()
+                )
+                db.collection(COLLECTION_USER_COLLECTIONS)
+                    .add(data)
+                    .await()
+                true
+            } ?: false
         } catch (e: Exception) {
             false
         }
@@ -156,16 +186,18 @@ class FirestoreService @Inject constructor() {
 
     suspend fun removeFromCollection(userId: String, dealId: String): Boolean {
         return try {
-            val snapshot = db.collection(COLLECTION_USER_COLLECTIONS)
-                .whereEqualTo("userId", userId)
-                .whereEqualTo("dealId", dealId)
-                .get()
-                .await()
+            db?.let { db ->
+                val snapshot = db.collection(COLLECTION_USER_COLLECTIONS)
+                    .whereEqualTo("userId", userId)
+                    .whereEqualTo("dealId", dealId)
+                    .get()
+                    .await()
 
-            for (doc in snapshot.documents) {
-                doc.reference.delete().await()
-            }
-            true
+                for (doc in snapshot.documents) {
+                    doc.reference.delete().await()
+                }
+                true
+            } ?: false
         } catch (e: Exception) {
             false
         }
@@ -173,12 +205,14 @@ class FirestoreService @Inject constructor() {
 
     suspend fun isCollected(userId: String, dealId: String): Boolean {
         return try {
-            val snapshot = db.collection(COLLECTION_USER_COLLECTIONS)
-                .whereEqualTo("userId", userId)
-                .whereEqualTo("dealId", dealId)
-                .get()
-                .await()
-            !snapshot.isEmpty
+            db?.let { db ->
+                val snapshot = db.collection(COLLECTION_USER_COLLECTIONS)
+                    .whereEqualTo("userId", userId)
+                    .whereEqualTo("dealId", dealId)
+                    .get()
+                    .await()
+                !snapshot.isEmpty
+            } ?: false
         } catch (e: Exception) {
             false
         }
@@ -186,11 +220,13 @@ class FirestoreService @Inject constructor() {
 
     suspend fun getUserCollections(userId: String): List<String> {
         return try {
-            val snapshot = db.collection(COLLECTION_USER_COLLECTIONS)
-                .whereEqualTo("userId", userId)
-                .get()
-                .await()
-            snapshot.documents.mapNotNull { it.getString("dealId") }
+            db?.let { db ->
+                val snapshot = db.collection(COLLECTION_USER_COLLECTIONS)
+                    .whereEqualTo("userId", userId)
+                    .get()
+                    .await()
+                snapshot.documents.mapNotNull { it.getString("dealId") }
+            } ?: emptyList()
         } catch (e: Exception) {
             emptyList()
         }
@@ -198,11 +234,13 @@ class FirestoreService @Inject constructor() {
 
     suspend fun updateFcmToken(userId: String, token: String): Boolean {
         return try {
-            db.collection(COLLECTION_USERS)
-                .document(userId)
-                .update("fcmToken", token)
-                .await()
-            true
+            db?.let { db ->
+                db.collection(COLLECTION_USERS)
+                    .document(userId)
+                    .update("fcmToken", token)
+                    .await()
+                true
+            } ?: false
         } catch (e: Exception) {
             false
         }
