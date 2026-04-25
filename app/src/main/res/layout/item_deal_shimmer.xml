@@ -27,26 +27,30 @@
                 android:padding="12dp">
 
                 <View
-                    android:layout_width="80%"
+                    android:layout_width="wrap_content"
                     android:layout_height="18dp"
+                    android:minWidth="120dp"
                     android:background="#EEEEEE"
                     android:layout_marginBottom="8dp" />
 
                 <View
-                    android:layout_width="60%"
+                    android:layout_width="wrap_content"
                     android:layout_height="14dp"
+                    android:minWidth="90dp"
                     android:background="#EEEEEE"
                     android:layout_marginBottom="8dp" />
 
                 <View
-                    android:layout_width="40%"
+                    android:layout_width="wrap_content"
                     android:layout_height="14dp"
+                    android:minWidth="60dp"
                     android:background="#EEEEEE"
                     android:layout_marginBottom="8dp" />
 
                 <View
-                    android:layout_width="50%"
+                    android:layout_width="wrap_content"
                     android:layout_height="16dp"
+                    android:minWidth="80dp"
                     android:background="#EEEEEE" />
 
             </LinearLayout>

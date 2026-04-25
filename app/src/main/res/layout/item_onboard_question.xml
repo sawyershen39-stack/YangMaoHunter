@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -21,16 +22,16 @@
         android:textColor="@color/text_secondary"
         android:textSize="14sp" />
 
-    <FlexboxLayout
+    <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/flexbox_tags"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:flexbox_flexWrap="wrap"
-        android:flexbox_flexDirection="row"
-        android:flexbox_alignItems="flexStart"
-        android:flexbox_justifyContent="flexStart">
+        app:flexWrap="wrap"
+        app:flexDirection="row"
+        app:alignItems="flexStart"
+        app:justifyContent="flexStart">
 
-    </FlexboxLayout>
+    </com.google.android.flexbox.FlexboxLayout>
 
 </LinearLayout>
