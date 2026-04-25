@@ -30,8 +30,8 @@
         android:layout_marginTop="24dp"
         app:flexWrap="wrap"
         app:flexDirection="row"
-        app:alignItems="flexStart"
-        app:justifyContent="flexStart">
+        app:alignItems="flex_start"
+        app:justifyContent="flex_start">
 
     </com.google.android.flexbox.FlexboxLayout>
 
