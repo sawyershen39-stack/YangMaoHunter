@@ -45,7 +45,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
     override fun observeData() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.deals.collect { deals ->
+                viewModel.deals.collect { deals: List<Deal> ->
                     updateDealsList(deals)
                 }
             }
@@ -53,7 +53,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.isRefreshing.collect { isRefreshing ->
+                viewModel.isRefreshing.collect { isRefreshing: Boolean ->
                     binding.swipeRefresh.isRefreshing = isRefreshing
                 }
             }
@@ -61,7 +61,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.shouldShowOnboarding.collect { shouldShow ->
+                viewModel.shouldShowOnboarding.collect { shouldShow: Boolean ->
                     if (shouldShow) {
                         startActivity(Intent(requireContext(), PreferenceOnboardActivity::class.java))
                     }
@@ -71,7 +71,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.isLoading.collect { isLoading ->
+                viewModel.isLoading.collect { isLoading: Boolean ->
                     if (isLoading) {
                         showShimmer()
                     } else {
