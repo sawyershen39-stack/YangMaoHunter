@@ -15,7 +15,7 @@ import com.yangmaolie.hunter.presentation.adapter.DealsAdapter
 import com.yangmaolie.hunter.presentation.ui.deal_detail.DealDetailActivity
 import com.yangmaolie.hunter.presentation.ui.onboard.PreferenceOnboardActivity
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
