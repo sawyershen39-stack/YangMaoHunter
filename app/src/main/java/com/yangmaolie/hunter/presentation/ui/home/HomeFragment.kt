@@ -51,33 +51,21 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             }
         }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.isRefreshing.collect { isRefreshing: Boolean ->
-                    binding.swipeRefresh.isRefreshing = isRefreshing
-                }
+        viewModel.isRefreshing.observe(viewLifecycleOwner) { isRefreshing: Boolean ->
+            binding.swipeRefresh.isRefreshing = isRefreshing
+        }
+
+        viewModel.shouldShowOnboarding.observe(viewLifecycleOwner) { shouldShow: Boolean ->
+            if (shouldShow) {
+                startActivity(Intent(requireContext(), PreferenceOnboardActivity::class.java))
             }
         }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.shouldShowOnboarding.collect { shouldShow: Boolean ->
-                    if (shouldShow) {
-                        startActivity(Intent(requireContext(), PreferenceOnboardActivity::class.java))
-                    }
-                }
-            }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.isLoading.collect { isLoading: Boolean ->
-                    if (isLoading) {
-                        showShimmer()
-                    } else {
-                        hideShimmer()
-                    }
-                }
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading: Boolean ->
+            if (isLoading) {
+                showShimmer()
+            } else {
+                hideShimmer()
             }
         }
     }
