@@ -10,24 +10,20 @@ import javax.inject.Singleton
 @Singleton
 class AuthService @Inject constructor() {
 
-    private val auth: FirebaseAuth by lazy {
+    private val auth: FirebaseAuth? by lazy {
         try {
             Firebase.auth
         } catch (e: Exception) {
-            // Firebase not initialized, will return null user
-            FakeFirebaseAuth()
+            null
         }
     }
 
     suspend fun signInAnonymously(): Result<String> {
         return try {
-            if (auth is FakeFirebaseAuth) {
-                Result.failure(Exception("Firebase 初始化失败 - 请检查网络连接"))
-            } else {
-                val result = auth.signInAnonymously().await()
-                val userId = result.user?.uid ?: ""
-                Result.success(userId)
-            }
+            val auth = auth ?: return Result.failure(Exception("Firebase 初始化失败 - 请检查网络连接"))
+            val result = auth.signInAnonymously().await()
+            val userId = result.user?.uid ?: ""
+            Result.success(userId)
         } catch (e: Exception) {
             Result.failure(e)
         }
@@ -35,7 +31,7 @@ class AuthService @Inject constructor() {
 
     fun getCurrentUserId(): String? {
         return try {
-            auth.currentUser?.uid
+            auth?.currentUser?.uid
         } catch (e: Exception) {
             null
         }
@@ -43,16 +39,9 @@ class AuthService @Inject constructor() {
 
     fun isLoggedIn(): Boolean {
         return try {
-            auth.currentUser != null
+            auth?.currentUser != null
         } catch (e: Exception) {
             false
         }
     }
-}
-
-/**
- * Fake implementation when Firebase is not available
- */
-private class FakeFirebaseAuth : FirebaseAuth() {
-    // Everything returns null/offline
 }
