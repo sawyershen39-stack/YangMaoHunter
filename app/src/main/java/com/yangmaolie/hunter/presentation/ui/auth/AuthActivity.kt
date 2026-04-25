@@ -2,6 +2,7 @@ package com.yangmaolie.hunter.presentation.ui.auth
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -19,6 +20,10 @@ class AuthActivity : BaseActivity<ActivityAuthBinding>() {
     }
 
     private val viewModel: AuthViewModel by viewModels()
+
+    override fun initViews() {
+        // No additional initialization needed
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

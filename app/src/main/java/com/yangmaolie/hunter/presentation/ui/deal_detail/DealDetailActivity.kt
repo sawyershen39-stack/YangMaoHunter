@@ -5,7 +5,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
+import androidx.activity.viewModels
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.yangmaolie.hunter.R
@@ -108,11 +110,11 @@ class DealDetailActivity : BaseActivity<ActivityDealDetailBinding>() {
         if (deal.usageRules.isNotEmpty()) {
             deal.usageRules.forEachIndexed { index, rule ->
                 val textView = TextView(this)
-                textView.layoutParams = TextView.LayoutParams(
+                textView.layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
                 ).apply {
-                    topMargin = 4.dpToPx()
+                    (this as ViewGroup.MarginLayoutParams).topMargin = 4.dpToPx()
                 }
                 textView.text = "${index + 1}. $rule"
                 textView.setTextColor(resources.getColor(R.color.text_secondary))

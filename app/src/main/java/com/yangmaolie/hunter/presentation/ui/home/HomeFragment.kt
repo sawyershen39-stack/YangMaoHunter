@@ -1,6 +1,7 @@
 package com.yangmaolie.hunter.presentation.ui.home
 
 import android.content.Intent
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -14,6 +15,7 @@ import com.yangmaolie.hunter.presentation.adapter.DealsAdapter
 import com.yangmaolie.hunter.presentation.ui.deal_detail.DealDetailActivity
 import com.yangmaolie.hunter.presentation.ui.onboard.PreferenceOnboardActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint

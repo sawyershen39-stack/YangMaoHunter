@@ -2,14 +2,15 @@ package com.yangmaolie.hunter.presentation.ui.onboard
 
 import android.content.Intent
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewpager2.widget.ViewPager2
 import com.yangmaolie.hunter.core.base.BaseActivity
 import com.yangmaolie.hunter.data.remote.firebase.AuthService
 import com.yangmaolie.hunter.databinding.ActivityPreferenceOnboardBinding
+import com.yangmaolie.hunter.domain.model.Deal
 import com.yangmaolie.hunter.domain.model.UserPreference
 import com.yangmaolie.hunter.domain.usecase.recommend.UpdateUserPreferencesUseCase
 import com.yangmaolie.hunter.presentation.ui.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
@@ -36,7 +37,6 @@ class PreferenceOnboardActivity : BaseActivity<ActivityPreferenceOnboardBinding>
         }
         binding.viewPager.adapter = adapter
         binding.viewPager.isUserInputEnabled = false
-        binding.viewPager.layoutManager = LinearLayoutManager(this)
 
         updateProgress()
         updateNextButton()
@@ -44,7 +44,7 @@ class PreferenceOnboardActivity : BaseActivity<ActivityPreferenceOnboardBinding>
         binding.btnNext.setOnClickListener {
             if (currentPage < questions.size - 1) {
                 currentPage++
-                binding.viewPager.scrollToPosition(currentPage)
+                binding.viewPager.currentItem = currentPage
                 updateProgress()
                 updateNextButton()
             } else {
@@ -83,7 +83,7 @@ class PreferenceOnboardActivity : BaseActivity<ActivityPreferenceOnboardBinding>
             Deal.CATEGORY_ONLINE_SHOP,
             Deal.CATEGORY_FOOD_DRINK,
             Deal.CATEGORY_OTHER
-        ).forEach { category ->
+        ).forEach { category: String ->
             categoryWeights[category] = 3.0
         }
         // Increase weight for selected categories

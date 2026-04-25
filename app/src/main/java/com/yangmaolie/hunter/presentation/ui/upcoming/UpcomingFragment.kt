@@ -1,5 +1,6 @@
 package com.yangmaolie.hunter.presentation.ui.upcoming
 
+import android.content.Intent
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
