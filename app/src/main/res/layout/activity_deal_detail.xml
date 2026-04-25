@@ -182,7 +182,7 @@
                         android:backgroundTint="@color/primary_light"
                         android:cornerRadius="24dp"
                         android:iconGravity="textStart"
-                        android:text="❤️ 收藏"
+                        android:text="收藏"/>
                         android:textColor="@color/primary" />
 
                     <com.google.android.material.button.MaterialButton
@@ -194,7 +194,7 @@
                         android:backgroundTint="@color/divider"
                         android:cornerRadius="24dp"
                         android:iconGravity="textStart"
-                        android:text="👎 不喜欢"
+                        android:text="不喜欢"/>
                         android:textColor="@color/text_secondary" />
 
                 </LinearLayout>
