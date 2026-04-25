@@ -134,12 +134,10 @@
                 <TextView
                     android:id="@+id/tv_original_price"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:layout_marginStart="6dp"
                     android:alpha="0.6"
                     android:textColor="@color/text_secondary"
-                    android:textSize="13sp"
-                    android:textDecoration="strikethrough" />
+                    android:textSize="13sp" />
 
             </LinearLayout>
 
