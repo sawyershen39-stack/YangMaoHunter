@@ -136,6 +136,9 @@ class DealDetailActivity : BaseActivity<ActivityDealDetailBinding>() {
                 .centerCrop()
                 .placeholder(R.drawable.placeholder)
                 .into(binding.ivCover)
+        } else {
+            // No image - show placeholder with brand color
+            binding.ivCover.setBackgroundColor(resources.getColor(com.yangmaolie.hunter.R.color.primary_light))
         }
 
         // Action button text
@@ -159,7 +162,7 @@ class DealDetailActivity : BaseActivity<ActivityDealDetailBinding>() {
             // Add flag to open in external browser/app
             intent.addCategory(Intent.CATEGORY_BROWSABLE)
             startActivity(intent)
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             // If no app can handle, open in browser
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             startActivity(intent)
