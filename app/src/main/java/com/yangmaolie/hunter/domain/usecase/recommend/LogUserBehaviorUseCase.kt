@@ -29,7 +29,7 @@ class LogUserBehaviorUseCase(
             // 重新计算偏好
             recommendRepository.calculateUserPreferencesFromLogs(userId)
             Result.success(result)
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             Result.failure(e)
         }
     }

@@ -19,7 +19,7 @@ abstract class BaseViewModel : ViewModel() {
             try {
                 _isLoading.value = true
                 block()
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
                 _errorMessage.value = e.message ?: "未知错误"
             } finally {
                 _isLoading.value = false

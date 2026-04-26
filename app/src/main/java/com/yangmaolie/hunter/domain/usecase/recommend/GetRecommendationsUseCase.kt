@@ -28,7 +28,7 @@ class GetRecommendationsUseCase(
                 userId, allDeals, limit
             )
             Result.success(recommendations)
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             Result.failure(e)
         }
     }

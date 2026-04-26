@@ -10,7 +10,7 @@ class UpdateUserPreferencesUseCase(
         return try {
             val result = recommendRepository.saveUserPreferences(preferences)
             Result.success(result)
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             Result.failure(e)
         }
     }
