@@ -13,7 +13,7 @@ class AuthService @Inject constructor() {
     private val auth: FirebaseAuth? by lazy {
         try {
             Firebase.auth
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             null
         }
     }
@@ -34,8 +34,8 @@ class AuthService @Inject constructor() {
                 }
                 Result.success(offlineUserId!!)
             }
-        } catch (e: Exception) {
-            // Fallback to offline mode on any error
+        } catch (e: Throwable) {
+            // Fallback to offline mode on any error/error
             if (offlineUserId == null) {
                 offlineUserId = "offline_${System.currentTimeMillis()}"
             }
@@ -51,7 +51,7 @@ class AuthService @Inject constructor() {
             } else {
                 offlineUserId
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             offlineUserId
         }
     }
@@ -63,7 +63,7 @@ class AuthService @Inject constructor() {
             } else {
                 offlineUserId != null
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             offlineUserId != null
         }
     }

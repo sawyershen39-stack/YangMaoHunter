@@ -16,14 +16,14 @@ class FirestoreService @Inject constructor() {
     private val db: FirebaseFirestore? by lazy {
         try {
             Firebase.firestore
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             null
         }
     }
     private val storage: FirebaseStorage? by lazy {
         try {
             FirebaseStorage.getInstance()
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             null
         }
     }
@@ -58,7 +58,7 @@ class FirestoreService @Inject constructor() {
                     doc.toObject(DealRemote::class.java)?.toDomain(doc.id)
                 }
             } ?: emptyList()
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             emptyList()
         }
     }
@@ -77,7 +77,7 @@ class FirestoreService @Inject constructor() {
                     doc.toObject(DealRemote::class.java)?.toDomain(doc.id)
                 }
             } ?: emptyList()
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             emptyList()
         }
     }
@@ -98,7 +98,7 @@ class FirestoreService @Inject constructor() {
                     doc.toObject(DealRemote::class.java)?.toDomain(doc.id)
                 }
             } ?: emptyList()
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             emptyList()
         }
     }
@@ -109,7 +109,7 @@ class FirestoreService @Inject constructor() {
                 val doc = db.collection(COLLECTION_DEALS).document(dealId).get().await()
                 doc.toObject(DealRemote::class.java)?.toDomain(doc.id)
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             null
         }
     }
@@ -128,7 +128,7 @@ class FirestoreService @Inject constructor() {
                 offlineUserPreferences = preferences.toRemote()
                 true
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             // Fallback to offline cache
             offlineUserPreferences = preferences.toRemote()
             true
@@ -144,7 +144,7 @@ class FirestoreService @Inject constructor() {
                     .await()
                 doc.toObject(UserPreferenceRemote::class.java)?.toDomain(userId)
             } ?: offlineUserPreferences?.toDomain(userId)
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             // Fallback to offline cache
             offlineUserPreferences?.toDomain(userId)
         }
@@ -158,7 +158,7 @@ class FirestoreService @Inject constructor() {
                     .await()
                 true
             } ?: false
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             false
         }
     }
@@ -176,7 +176,7 @@ class FirestoreService @Inject constructor() {
                     doc.toObject(UserBehaviorLogRemote::class.java)?.toDomain(doc.id)
                 }
             } ?: emptyList()
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             emptyList()
         }
     }
@@ -198,7 +198,7 @@ class FirestoreService @Inject constructor() {
                 offlineCollections.add("$userId:$dealId")
                 true
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             // Fallback to offline cache
             offlineCollections.add("$userId:$dealId")
             true
@@ -223,7 +223,7 @@ class FirestoreService @Inject constructor() {
                 offlineCollections.remove("$userId:$dealId")
                 true
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             // Fallback to offline cache
             offlineCollections.remove("$userId:$dealId")
             true
@@ -240,7 +240,7 @@ class FirestoreService @Inject constructor() {
                     .await()
                 !snapshot.isEmpty
             } ?: offlineCollections.contains("$userId:$dealId")
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             // Fallback to offline cache
             offlineCollections.contains("$userId:$dealId")
         }
@@ -257,7 +257,7 @@ class FirestoreService @Inject constructor() {
             } ?: offlineCollections
                 .filter { it.startsWith("$userId:") }
                 .map { it.substringAfter(":") }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             // Fallback to offline cache
             offlineCollections
                 .filter { it.startsWith("$userId:") }
@@ -274,7 +274,7 @@ class FirestoreService @Inject constructor() {
                     .await()
                 true
             } ?: false
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             false
         }
     }
